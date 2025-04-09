@@ -13,9 +13,11 @@ def create_app():
 
     from routes.auth import auth_bp
     from routes.resources import resource_bp
+    from routes.catalog import catalog_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(resource_bp, url_prefix="/api/resources")
+    app.register_blueprint(catalog_bp, url_prefix="/api/catalog")
 
     return app
 

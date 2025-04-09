@@ -29,11 +29,18 @@ def register():
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
-    data = request.json
+    data = request.get_json()
+    print("== ЛОГИН ==")
+    print("Полученные данные:", request.get_json())
+
     username = data.get("username")
     password = data.get("password")
 
     user = User.query.filter_by(username=username).first()
+    print("Найден пользователь:", user)
+    if user:
+        print("Проверка пароля:", check_password_hash(user.password_hash, password))
+
     if not user or not check_password_hash(user.password_hash, password):
         return jsonify({"error": "Неверный логин или пароль"}), 401
 
