@@ -66,21 +66,29 @@ def get_resource(resource_id):
 def debug_resources():
     return jsonify([r.id for r in Resource.query.all()])
 
-@resource_bp.route("/", methods=["POST"])
-def create_resource():
+@resource_bp.route("/<int:resource_id>", methods=["PUT"])
+def update_resource(resource_id):
+    resource = Resource.query.get_or_404(resource_id)
     data = request.get_json()
 
-    resource = Resource(
-        title=data.get("title"),
-        url=data.get("url"),
-        section=data.get("section"),
-        tags=data.get("tags"),
-        description=data.get("description"),
-        contact_info=data.get("contact_info"),
-        user_id=data.get("user_id")
-    )
+    resource.title = data.get("title", resource.title)
+    resource.url = data.get("url", resource.url)
+    resource.description = data.get("description", resource.description)
+    resource.section = data.get("section", resource.section)
+    resource.tags = data.get("tags", resource.tags)
+    resource.contact_info = data.get("contact_info", resource.contact_info)
 
-    db.session.add(resource)
+    from datetime import datetime
+    resource.last_updated = datetime.utcnow()
+
     db.session.commit()
 
-    return jsonify({"message": "Resource created", "id": resource.id}), 201
+    return jsonify({"message": "Ресурс обновлён"})
+
+@resource_bp.route("/<int:resource_id>", methods=["DELETE"])
+def delete_resource(resource_id):
+    resource = Resource.query.get_or_404(resource_id)
+    db.session.delete(resource)
+    db.session.commit()
+    return jsonify({"message": "Ресурс удалён"}), 200
+

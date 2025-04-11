@@ -1,5 +1,6 @@
 from flask import Flask, send_from_directory
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from config import Config
 from extensions import db, migrate
 import os
@@ -23,11 +24,16 @@ def create_app():
         "origins": "*",
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type"]
+        , "origins":["http://localhost:8081"]
+        , "supports_credentials":True
     }})
 
     @app.route('/static/<path:filename>')
     def static_files(filename):
         return send_from_directory(os.path.join(app.root_path, 'static'), filename)
+    
+    app.config['JWT_SECRET_KEY'] = 'very-secret'
+    jwt = JWTManager(app)
 
     return app
 
