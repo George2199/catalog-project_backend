@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import Config
 from extensions import db, migrate
+from models import User, Resource, Image
 import os
 
 def create_app():
