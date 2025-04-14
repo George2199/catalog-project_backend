@@ -1,6 +1,7 @@
 import random
-from datetime import datetime, timedelta
+from datetime import datetime
 from faker import Faker
+from werkzeug.security import generate_password_hash
 
 from app import app
 from models import db, User, Resource
@@ -38,9 +39,29 @@ def create_resources(users, n=100):
         db.session.add(resource)
     db.session.commit()
 
+# Вставка пользователя ivanov
+def insert_test_user():
+    existing = User.query.filter_by(username='ivanov').first()
+    if existing:
+        print("Пользователь ivanov уже существует")
+        return
+    user = User(
+        username='ivanov',
+        email='ivanov@mail.com',
+        password_hash=generate_password_hash('123'),
+        role='user'
+    )
+    db.session.add(user)
+    db.session.commit()
+    print("✓ Пользователь ivanov добавлен")
+
 # Основной запуск
 with app.app_context():
-    print("Добавляем пользователей и ресурсы...")
+    print("Добавляем пользователя ivanov...")
+    insert_test_user()
+
+    print("Добавляем случайных пользователей и ресурсы...")
     users = create_users()
     create_resources(users)
-    print("Готово: 5 пользователей и 100 ресурсов добавлены в БД.")
+
+    print("✅ БД готова: ivanov, 5 случайных пользователей и 100 ресурсов.")

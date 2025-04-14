@@ -20,13 +20,15 @@ def create_app():
     app.register_blueprint(resource_bp, url_prefix="/api/resources")
     app.register_blueprint(catalog_bp, url_prefix="/api/catalog")
 
-    CORS(app, resources={r"/api/*": {
-        "origins": "*",
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
-        , "origins":["http://localhost:8081"]
-        , "supports_credentials":True
-    }})
+    # CORS(app, resources={r"/api/*": {
+    #     "origins": "*",
+    #     "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    #     "allow_headers": ["Content-Type", "Authorization"]
+    #     , "origins":["http://localhost:8081"]
+    #     , "supports_credentials":True
+    # }})
+
+    CORS(app)
 
     @app.route('/static/<path:filename>')
     def static_files(filename):
