@@ -34,6 +34,17 @@ def create_app():
     def static_files(filename):
         return send_from_directory(os.path.join(app.root_path, 'static'), filename)
     
+    @app.route("/db-check")
+    def db_check():
+        try:
+            # Импорт модели
+            from models import User  # или как у тебя там
+            count = User.query.count()
+            return f"DB подключена. Всего пользователей: {count}"
+        except Exception as e:
+            return f"Ошибка подключения к БД: {e}", 500
+
+    
     app.config['JWT_SECRET_KEY'] = 'very-secret'
     jwt = JWTManager(app)
 
